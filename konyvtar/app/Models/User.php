@@ -50,5 +50,7 @@ class User extends Authenticatable
     public function isAdmin()  {
         return $this->role === 0;
     }
-
+    public function userandlendingsdata(){
+        return $this->hasMany(Lending::class, 'user_id', 'id');
+    }
 }
