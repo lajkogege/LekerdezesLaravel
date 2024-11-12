@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lending;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LendingController extends Controller
 {
@@ -73,4 +74,59 @@ class LendingController extends Controller
         ->where('copy_id','=', $copy_id)
         ->get();
     }
+
+    //hányszor kölcsönöztünk..
+    public function lendingCount(){
+        $user = Auth::user();
+        $lendings = DB::table('lendings as l')
+        ->where('user_id', $user->id)
+        ->count();
+        return $lendings;
+    }
+
+    //hány aktív kölcsönzés van
+    public function activeLendingCount(){
+        $user = Auth::user();
+        $lendings = DB::table('lendings as l')
+        ->where('user_id', $user->id)
+        ->whereNull('end')
+        ->count();
+        return $lendings;
+    }
+
+    //kölcsönzött könyvek száma
+    public function lendingsBooksCount(){
+        $user = Auth::user();
+        $books = DB::table('lendings as l')
+        ->join('copies as c', 'l.copy_id', 'c.copy_id')
+        ->where('user_id', $user->id)
+        ->distinct('book_id')
+        ->count();
+        return $books;
+    }
+
+    //kölcsönzött könyvek adatai
+    public function lendingsBooksData(){
+        $user = Auth::user();
+        $books = DB::table('lendings as l')
+        ->join('copies as c', 'l.copy_id', 'c.copy_id')
+        ->join('books as b', 'c.book_id', 'b.book_id')
+        ->selectRaw('count(*) as ennyiszer, b.book_id, author, title')
+        ->where('user_id', $user->id)
+        ->groupBy('b.book_id')
+        ->havingRaw('ennyiszer < 2')
+        ->get();
+        return $books;
+    }
+
+    public function hardCoveredBooks(){
+        $books = DB::table('books as b')
+        ->join('copies as c', 'b.book_id', 'c.book_id')
+        ->select('author', 'title')
+        ->where('hardcovered', $value=0)
+        ->distinct('book_id')
+        ->get();
+        return $books;
+    }
+    
 }
