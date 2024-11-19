@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\LendingController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Librarian;
@@ -51,7 +52,10 @@ Route::middleware(['auth:sanctum', Admin::class])
 //librarian
 Route::middleware(['auth:sanctum', Librarian::class])
 ->group(function () {
-    Route::get('/books-copies', [BookController::class, "booksWithCopies"]);
+    Route::get('/librarian/books-copies', [BookController::class, "booksWithCopies"]);
+    Route::get('/librarian/reservations', [ReservationController::class, 'index']);
+    Route::get('/librarian/reservations/{user_id}/{book_id}/{start}', [ReservationController::class, 'show']);
+    Route::patch('/librarian/reservations/{user_id}/{book_id}/{start}', [ReservationController::class, 'update']);
 });
 
 //warehouseman

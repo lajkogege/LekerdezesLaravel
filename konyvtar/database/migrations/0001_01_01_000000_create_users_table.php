@@ -27,21 +27,21 @@ return new class extends Migration
 
         User::create([
             'name'=>'admin', 
-            'email'=> 'admin@admin.hu',
+            'email'=> 'admin@akk.hu',
             'password' => Hash::make('admin12345'),
             'role' => 0
         ]);
 
         User::create([
             'name'=>'librarian', 
-            'email'=> 'librarian@admin.hu',
+            'email'=> 'librarian@akk.hu',
             'password' => Hash::make('librarian12345'),
             'role' => 1
         ]);
 
         User::create([
             'name'=>'user', 
-            'email'=> 'user@user.hu',
+            'email'=> 'user@akk.hu',
             'password' => Hash::make('user12345')
         ]);
         
