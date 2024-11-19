@@ -35,6 +35,9 @@ Route::middleware(['auth:sanctum'])
         Route::get('lendings-books-data', [LendingController::class, 'lendingsBooksData']);
         Route::get('/lendings-copies', [LendingController::class, "lendingsWithCopies"]);
         Route::get('/userlendings', [UserController::class, "userLendings"]);
+        Route::get('/reserved-books', [ReservationController::class, 'reservedBooks']);
+        Route::get('/reserved-count', [ReservationController::class, 'reservedCount']);
+        Route::get('/reservations-i-have-from', [LendingController::class, 'reservationsIHaveFrom']);
 
         // Kijelentkezés útvonal
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
@@ -56,6 +59,7 @@ Route::middleware(['auth:sanctum', Librarian::class])
     Route::get('/librarian/reservations', [ReservationController::class, 'index']);
     Route::get('/librarian/reservations/{user_id}/{book_id}/{start}', [ReservationController::class, 'show']);
     Route::patch('/librarian/reservations/{user_id}/{book_id}/{start}', [ReservationController::class, 'update']);
+    Route::get('/librarian/users-and-reservations', [UserController::class, 'usersWithReservations']);
 });
 
 //warehouseman

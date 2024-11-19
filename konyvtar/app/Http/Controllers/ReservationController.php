@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -52,5 +55,23 @@ class ReservationController extends Controller
     public function destroy(string $user_id,string $book_id,string $start)
     {
         $this->show($user_id, $book_id, $start)->delete();
+    }
+
+    //spec lekérdezések
+    public function reservedBooks(){
+        $user = Auth::user();
+        return Reservation::with('books')
+        ->where('user_id', $user->id)
+        ->get();
+    }
+
+    //Hány darab előjegyzése van a bejelentkezett felhasználónak?
+    public function reservedCount(){
+        $user = Auth::user();
+        $pieces = DB::table('reservations')
+        ->where('user_id', $user->id)
+        ->count();
+
+        return $pieces;
     }
 }

@@ -21,5 +21,9 @@ class Reservation extends Model
             ->where('book_id', '=', $this->getAttribute('book_id'))
             ->where('start', '=', $this->getAttribute('start'));
         return $query;
-}
+    }
+
+    public function books(){
+        return $this->belongsTo(Book::class, 'book_id', 'book_id');
+    }
 }
