@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum', Librarian::class])
     Route::get('/librarian/reservations/{user_id}/{book_id}/{start}', [ReservationController::class, 'show']);
     Route::patch('/librarian/reservations/{user_id}/{book_id}/{start}', [ReservationController::class, 'update']);
     Route::get('/librarian/users-and-reservations', [UserController::class, 'usersWithReservations']);
+    Route::post('/librarian/store-lending', [LendingController::class, 'store']);
 });
 
 //warehouseman
