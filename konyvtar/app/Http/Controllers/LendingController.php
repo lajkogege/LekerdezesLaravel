@@ -143,4 +143,37 @@ class LendingController extends Controller
 
         return $books;
     }
+
+    public function bringBack($copy_id, $start){
+        //bej-tt felhasználó
+        $user = Auth::user();
+        //melyik kölcsönzés?
+        $lending = $this->show($user->id, $copy_id, $start);
+        //visszahozom a könyvet
+        $lending->end = date(now());
+        //mentés
+        $lending->save();
+        //2. esemény, ami szintén patch!!!
+        DB::table('copies')
+        ->where('copy_id', $copy_id)
+        //ebben benne van a mentés is!
+        ->update(['status' => 0]);
+    }
+
+    public function bringBack2($copy_id, $start){
+        //bej-tt felhasználó
+        $user = Auth::user();
+        //melyik kölcsönzés?
+        $lending = $this->show($user->id, $copy_id, $start);
+        //visszahozom a könyvet
+        $lending->end = date(now());
+        //mentés
+        $lending->save();
+        //2. esemény, ami szintén patch!!!
+        /* DB::table('copies')
+        ->where('copy_id', $copy_id)
+        //ebben benne van a mentés is!
+        ->update(['status' => 0]); */
+        DB::select('CALL toLibrary(?)', array($copy_id));
+    }
 }
