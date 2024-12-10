@@ -29,20 +29,20 @@ class ReservationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $user_id, string $book_id,string $start)
+    public function show(string $user_id, string $book_id, string $start)
     {
         $reservation = Reservation::where('user_id', $user_id)
-        ->where('book_id', $book_id)
-        ->where('start', $start)
-        //listát ad vissza:
-        ->get();
+            ->where('book_id', $book_id)
+            ->where('start', $start)
+            //listát ad vissza:
+            ->get();
         return $reservation[0];
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,string $user_id,string $book_id,string $start)
+    public function update(Request $request, string $user_id, string $book_id, string $start)
     {
         $user = $this->show($user_id, $book_id, $start);
         $user->fill($request->all());
@@ -52,26 +52,53 @@ class ReservationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $user_id,string $book_id,string $start)
+    public function destroy(string $user_id, string $book_id, string $start)
     {
         $this->show($user_id, $book_id, $start)->delete();
     }
 
     //spec lekérdezések
-    public function reservedBooks(){
+    public function reservedBooks()
+    {
         $user = Auth::user();
         return Reservation::with('books')
-        ->where('user_id', $user->id)
-        ->get();
+            ->where('user_id', $user->id)
+            ->get();
     }
 
     //Hány darab előjegyzése van a bejelentkezett felhasználónak?
-    public function reservedCount(){
+    public function reservedCount()
+    {
         $user = Auth::user();
         $pieces = DB::table('reservations')
-        ->where('user_id', $user->id)
-        ->count();
+            ->where('user_id', $user->id)
+            ->count();
 
         return $pieces;
     }
+
+    public function reservedCountSQL()
+    {
+        $user=Auth::user();
+        $pieces = DB::select
+        ("SELECT count(*) 
+        FROM `reservations` 
+        WHERE user_id=?", 
+        [$user->id]);
+        return $pieces;
+    }
+
+    //admin útvonal
+    public function reservedCountSqlId($id)
+    {
+        $user=Auth::user();
+        $pieces = DB::select
+            ("SELECT count(*)
+            FROM `reservations` 
+            WHERE user_id=?", 
+            [$id]);
+        return $pieces;
+    }
+
+    
 }

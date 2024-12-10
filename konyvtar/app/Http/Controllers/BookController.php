@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -47,11 +48,35 @@ class BookController extends Controller
         //
     }
 
-    public function booksWithCopies(){
+    public function booksWithCopies()
+    {
         //$user = Auth::user();	//bejelentkezett felhasználó
         //copies: fg neve!!!
         return Book::with('copies')
-        //->where('user_id','=', $user->id)
-        ->get();
+            //->where('user_id','=', $user->id)
+            ->get();
+    }
+
+    //laarvel-es változatú lekérdezés
+    public function authorWithTitles()
+    {
+        $authors = DB::table('books')
+            ->selectRaw('author, COUNT(*) db')
+            ->groupBy('author')
+            ->havingRaw('db > 1')
+            ->get();
+
+        return $authors;
+    }
+
+    public function authorWithTitlesKetto($konyvekszama)
+    {
+        $authors = DB::table('books')
+            ->selectRaw('author, COUNT(*) db')
+            ->groupBy('author')
+            ->havingRaw('db > ?', [$konyvekszama])
+            ->get();
+
+        return $authors;
     }
 }

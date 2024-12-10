@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             //0: admin, 1: librarian, 2: warehouseman, 3: user
-            $table->boolean('role')->default(3);
+            $table->smallInteger('role')->default(3);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -45,6 +45,12 @@ return new class extends Migration
             'password' => Hash::make('user12345')
         ]);
         
+        User::create([
+            'name'=>'warehouseman', 
+            'email'=> 'warehouseman@akk.hu',
+            'password' => Hash::make('warehouseman12345'), //Hash::make--titkositás
+            'role' => 2
+        ]);
         
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
